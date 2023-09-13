@@ -1,0 +1,21 @@
+{% comment %} <div class="form-row"> {% endcomment %}
+   {% comment %}  {{ widget.input_type }}
+    {{ widget.name }}
+    {{widget}} {% endcomment %}
+    
+{% comment %} {% for checkbox in widget %}
+    <div class="form-group col-md-3">
+        <label for="{{ widget.id_for_label }}_{{ forloop.counter0 }}">{{ checkbox.choice_label }}</label>
+        <input type="{{ widget.input_type }}" name="{{ widget.name }}"{% if widget.value in checkbox.attrs %} checked{% endif %}{% if widget.is_required %} required{% endif %} value="{{ checkbox.choice_value }}"{% include "django/forms/widgets/attrs.html" %}>
+</div>
+{% endfor %} {% endcomment %}
+
+
+
+{% with id=widget.attrs.id %}<div{% if id %} id="{{ id }}"{% endif %}{% if widget.attrs.class %} class="{{ widget.attrs.class }}"{% endif %}>{% for group, options, index in widget.optgroups %}{% if group %}
+  <div><label>{{ group }}</label>{% endif %}{% for option in options %}<div class="form-group col-md-3 d-flex justify-content-center align-items-center h-20 " style="text-align:center">
+    {% include option.template_name with widget=option %}</div>{% endfor %}{% if group %}
+  </div>{% endif %}{% endfor %}
+</div>{% endwith %}
+
+{% comment %} </div> {% endcomment %}
