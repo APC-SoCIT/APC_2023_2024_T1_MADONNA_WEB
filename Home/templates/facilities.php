@@ -14,9 +14,9 @@
 {% comment %} <div class="row mb-2"> {% endcomment %}
   <div class="row tm-row m-auto container border border-dark rounded reserve-form reserve_section">
   {%for x in facility%}
-
-        <article class="col-12 col-md-6 tm-post">
-          <div class="card flex-md-row mb-4 box-shadow h-md-250">
+      {% if x.facilityPic != NULL %}
+        <article class="col-12 col-md-6 tm-post facility-article">
+          <div class="card flex-md-row mb-4 box-shadow h-md-250" style="height:300px; width: 525px;">
             <div class="card-body d-flex flex-column align-items-start">
               <!--<strong class="d-inline-block mb-2 text-primary">World</strong>
 -->
@@ -26,9 +26,13 @@
               <div class="mb-1 text-muted">₱{{x.facilityPrice}}</div>
               <p class="card-text mb-auto">{{x.facilityDescription}}</a>
             </div>
-            <img src="../{{x.facilityPic}}" class="card-img-right flex-auto d-none d-md-block" data-holder-rendered="true" style="height:200px; width: 300px;">
+            <img src="../{{x.facilityPic}}" class="card-img-right flex-auto d-none d-md-block" data-holder-rendered="true" style="height:200px; width: 300px; padding:20px;">
           </div>
         </article>
+
+        {% endif %}
+
+        
       {% comment %}</div>  {% endcomment %}
       {%endfor%}
 </div>

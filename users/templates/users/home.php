@@ -158,7 +158,13 @@ else {
 	for(var i=0; i<events.length; i++) {
 		var event_card = $("<div class='event-card'></div>")
 		var event_name = $("<div class='event-name'>"+events[i]["occasion"]+":</div>");
-		var event_count = $("<div class='event-count'><p>Check in Time: "+events[i]["checkinTime"]+"</p><p>Check out: "+events[i]["invited_count"]+"</p><p>Check out Time: "+events[i]["checkoutTime"]+"</p><a href="+"/reservation/edit/"+events[i]["id"]+" class="+"btn btn-secondary my-3"+">Add more Details</a></div>");
+		var event_count = $("<div class='event-count'><p>Check in Time: "+events[i]["checkinTime"]+
+			"</p><p>Check out: "+events[i]["checkout"]+
+				"</p><p>Number of Guest: "+events[i]["invited_count"]+
+				"</p><p>Check out Time: "+events[i]["checkoutTime"]+
+					"</p><a href="+"/reservation/edit/"+events[i]["id"]+
+					" class="+"btn btn-secondary my-3"+
+					">Add more Details</a></div>");
 		if(events[i]["status"]==="Cancelled") {
 			$(event_card).css({
 				"border-left": "10px solid #FF1744"
@@ -211,7 +217,7 @@ var event_data = {
 };
 
 {%for x in reserve %}
-var  date = "{{x.checkIn|date:"y-m-d"}}";
+var  date = "{{x.check_in_date|date:"y-m-d"}}";
 var numdate = date.split('-');
 var strYear = "20";
 var year = parseInt(strYear.concat(numdate[0]));
@@ -219,18 +225,19 @@ var month = parseInt(numdate[1]);
 var day = parseInt(numdate[2]);
 
 event_data["events"].push({
-	id:{{x.reservationID}},
-    occasion:"{{x.customer}}",
-    invited_count:"{{x.checkOut}}",
+	id:{{x.id}},
+    occasion:"{{x.guest_name}}",
+    invited_count:"{{x.num_guests}}",
     year: year,
     month: month,
     day: day,
 	status: "{{x.status}}",
-	ReferenceNumber: "{{x.referenceNum}}",
-	Total: {{x.totalPayment}},
-	Balance: {{x.balance}},
-	checkinTime : "{{x.timeIn}}",
-	checkoutTime : "{{x.timeOut}}",
+	ReferenceNumber: "{{x.reference_number}}",
+	Total: {{x.total}},
+	{% comment %} Balance: {{x.balance}}, {% endcomment %}
+	checkinTime : "{{x.check_in_time}}",
+	checkoutTime : "{{x.check_out_time}}",
+	checkout:"{{x.check_out_date}}"
 
 
   });
@@ -320,5 +327,6 @@ const months = [
 				</div>
 			</div>
 		</div>
+		
 {%endblock%}
 

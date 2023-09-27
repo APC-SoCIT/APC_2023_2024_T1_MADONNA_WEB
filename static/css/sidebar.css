@@ -83,13 +83,14 @@
 .content {
     margin-left: 250px;
     min-height: 100vh;
-    background: #FFFFFF;
+    background: #f9c6b3;
     transition: 0.5s;
 }
 
 @media (min-width: 992px) {
     .sidebar {
         margin-left: 0;
+        background: #f9c6b3;
     }
 
     .sidebar.open {
@@ -145,7 +146,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #FFFFFF;
+    background: #3b3b3b;
     border-radius: 40px;
 }
 

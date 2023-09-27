@@ -3,7 +3,6 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("test/", views.test, name="test"),
     path("reserve/", views.reserveView, name="reserve"),
     path("reservation/<int:pk>", views.moreDetailView.as_view(), name="reservation"),
     path("reservation/new", views.reserveNew, name="reservation.new"),
@@ -25,4 +24,7 @@ urlpatterns = [
         views.viewReservation.as_view(),
         name="reserve.receipt",
     ),
+    path("reward/", views.rewardView, name="reward"),
+    path("reward/new", views.rewardNew, name="reward.new"),
+    path("reward/edit/<int:pk>", views.rewardEdit, name="reward.edit"),
 ]

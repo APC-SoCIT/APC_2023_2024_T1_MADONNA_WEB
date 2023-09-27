@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reservation Page</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+      }
+      
+      header {
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+      }
+      
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        overflow-x: auto; /* Enable horizontal scrolling */
+      }
+      
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      
+      form {
+        margin-top: 20px;
+      }
+      
+      label {
+        display: block;
+        font-weight: bold;
+      }
+      
+      input[type='text'],
+      input[type='date'],
+      input[type='number'] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      
+      input[type='submit'] {
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+      }
+      
+      input[type='submit']:hover {
+        background-color: #555;
+      }
+      
+      .calendar {
+        width: 70%;
+        margin: 0 auto;
+      }
+      
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Make a Reservation</h1>
+    </header>
+    <div class="container">
+      <form id="multi-step-form" action="#" method="post">
+        <!-- Step 1: Availability Check -->
+        <div id="step1" class="step">
+          <div class="calendar" id="calendar"></div>
+          <div id="selectedDates">
+            <strong>Check in:</strong>
+            <input id="checkInDate" type="text" disabled />
+            <strong>Check out:</strong>
+            <input id="checkOutDate" type="text" disabled />
+          </div>
+          <label for="num_guests">Number of Guests:</label>
+          <input type="number" id="num_guests" name="num_guests" required />
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+
+        <!-- Step 2: Customer Information -->
+        <div id="step2" class="step hidden">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+          <label for="phone">Phone Number:</label>
+          <input type="tel" id="phone" name="phone" required />
+          <label for="comments">Comments:</label>
+          <textarea id="comments" name="comments" rows="4" cols="50"></textarea>
+        </div>
+
+        <!-- Step 3: Reservation Information -->
+        <div id="step3" class="hidden step">
+          <!-- Add content for Step 3 if needed -->
+        </div>
+        <div>
+          <button id="prev-step">Previous</button>
+          <button id="next-step">Next</button>
+          <button id="submit-reservation" style="display: none;">Submit Reservation</button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      function isToday(dateStr) {
+        var today = new Date()
+        var selectedDate = new Date(dateStr)
+        var selectedCheckInDate = null
+        return today.getDate() === selectedDate.getDate() && today.getMonth() === selectedDate.getMonth() && today.getFullYear() === selectedDate.getFullYear()
+      }
+      
+      document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar')
+        var selectedCheckInDate = null
+        var selectedCheckOutDate = null
+      
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth', // Change the view as needed
+          selectable: true, // Enable date selection
+          select: function (info) {
+            var selectedDate = new Date(info.startStr)
+      
+            // Check if the selected date is in the past
+            if (selectedDate < new Date() && !isToday(info.startStr)) {
+              alert("You can't select past dates.")
+              calendar.unselect()
+              return
+            }
+      
+            // Check if the selected check-in date is after the check-out date
+            if (selectedCheckOutDate && selectedDate > new Date(selectedCheckOutDate)) {
+              alert('Check-in date cannot be after the check-out date.')
+              calendar.unselect()
+              return
+            }
+      
+            // Handle date selection
+            if (!selectedCheckInDate) {
+              // Set the check-in date if it's not already set
+              selectedCheckInDate = info.startStr
+              // Add a "Check-in" event on the selected date
+              calendar.addEvent({
+                title: 'Check-in',
+                start: selectedCheckInDate,
+                color: 'blue' // Customize the color for check-in date
+              });
+
+            } else if (!selectedCheckOutDate) {
+              // Check if the selected check-out date is before the check-in date
+              if (selectedDate < new Date(selectedCheckInDate)) {
+                alert('Check-out date cannot be before or on the same day as the check-in date.')
+                calendar.unselect()
+                return
+              }
+      
+              // Set the check-out date
+              selectedCheckOutDate = info.startStr
+      
+              // Display selected dates
+              document.getElementById('checkInDate').value = selectedCheckInDate
+              document.getElementById('checkOutDate').value = selectedCheckOutDate
+      
+              // You can now use selectedCheckInDate and selectedCheckOutDate as needed.
+              console.log('Check-in Date: ' + selectedCheckInDate)
+              console.log('Check-out Date: ' + selectedCheckOutDate)
+            }
+            renderSelection()
+          },
+          selectAllow: function (selectInfo) {
+            // Allow selection only if both check-in and check-out dates are not set
+            return !(selectedCheckInDate && selectedCheckOutDate)
+          },
+          events: [
+            {
+              title: 'Unavailable',
+              start: '2023-09-15',
+              end: '2023-09-17',
+              color: 'red'
+            },
+            {
+              title: 'Unavailable',
+              start: '2023-09-20',
+              end: '2023-09-22',
+              color: 'red'
+            }
+            // Add more unavailable date entries
+          ],
+          selectOverlap: function (event) {
+            // Prevent selection overlap with unavailable dates
+            return !event.backgroundColor || event.backgroundColor !== 'red'
+          }
+        })
+      
+        function renderSelection() {
+          // Clear existing selections
+          calendar.removeAllEventSources()
+      
+          // Add unavailable dates as events
+          calendar.addEventSource({
+            events: [
+              {
+                title: 'Unavailable',
+                start: '2023-09-15',
+                end: '2023-09-17',
+                color: 'red'
+              },
+              {
+                title: 'Unavailable',
+                start: '2023-09-20',
+                end: '2023-09-22',
+                color: 'red'
+              }
+              // Add more unavailable date entries
+            ],
+            rendering: 'background'
+          })
+      
+          // Add selected check-in and check-out dates as events
+          if (selectedCheckInDate && selectedCheckOutDate) {
+            calendar.addEvent({
+              title: 'Check-in',
+              start: selectedCheckInDate,
+              color: 'blue' // Customize the color for check-in date
+            })
+      
+            calendar.addEvent({
+              title: 'Check-out',
+              start: selectedCheckOutDate,
+              color: 'blue' // Customize the color for check-out date
+            })
+            var currentDate = new Date(selectedCheckInDate)
+      
+            while (currentDate <= new Date(selectedCheckOutDate)) {
+              var formattedDate = currentDate.toISOString().split('T')[0]
+              calendar.addEvent({
+                title: ' ',
+                start: formattedDate,
+                color: 'green' // Customize the color for selected date range
+              })
+      
+              // Move to the next day
+              currentDate.setDate(currentDate.getDate() + 1)
+            }
+          }
+        }
+      
+        calendar.render()
+      
+        // Your JavaScript code here to control form navigation and validation
+        const stepContainer = document.querySelector('.container')
+        const steps = document.querySelectorAll('.step')
+        const prevStepButton = document.getElementById('prev-step')
+        const nextStepButton = document.getElementById('next-step')
+        const submitReservationButton = document.getElementById('submit-reservation')
+        let currentStep = 0
+      
+        function updateStepVisibility() {
+          steps.forEach((step, index) => {
+            if (index === currentStep) {
+              step.classList.remove('hidden')
+            } else {
+              step.classList.add('hidden')
+            }
+          })
+      
+          const translateX = -currentStep * 100 // 100% for each step
+          prevStepButton.disabled = currentStep === 0
+          submitReservationButton.style.display = currentStep === steps.length - 1 ? 'block' : 'none'
+      
+          // Show Step 2 fields when transitioning to Step 2
+          if (currentStep === 1) {
+            document.getElementById('step2').classList.remove('hidden')
+          } else {
+            document.getElementById('step2').classList.add('hidden')
+          }
+      
+          // Enable or disable the "Next" button based on form validation
+          if (currentStep < steps.length - 1) {
+            nextStepButton.disabled = !isCurrentStepValid()
+          } else {
+            nextStepButton.disabled = true
+          }
+          // Show/hide buttons based on the current step
+          if (currentStep === 0) {
+            prevStepButton.style.display = 'none' // Hide "Previous" on the first step
+          } else {
+            prevStepButton.style.display = 'block' // Show "Previous" on other steps
+          }
+      
+          if (currentStep === steps.length - 1) {
+            nextStepButton.style.display = 'none' // Hide "Next" on the last step
+            submitReservationButton.style.display = 'block' // Show "Submit Reservation" on the last step
+          } else {
+            nextStepButton.style.display = 'block' // Show "Next" on other steps
+            submitReservationButton.style.display = 'none' // Hide "Submit Reservation" on other steps
+          }
+        }
+      
+        function isCurrentStepValid() {
+          // Implement validation logic for each step
+          if (currentStep === 0) {
+            // Check if fields in Step 1 are filled
+            const numGuests = document.getElementById('num_guests').value
+            const name = document.getElementById('name').value
+            return numGuests !== '' && name !== ''
+          } else if (currentStep === 1) {
+            // Check if fields in Step 2 are filled
+            const email = document.getElementById('email').value
+            const phone = document.getElementById('phone').value
+            const comments = document.getElementById('comments').value
+            return email !== '' && phone !== ''
+          }
+          // Add more validation for other steps if needed
+          return true
+        }
+      
+        prevStepButton.addEventListener('click', () => {
+          if (currentStep > 0) {
+            currentStep--
+            updateStepVisibility()
+          }
+        })
+      
+        nextStepButton.addEventListener('click', () => {
+          if (currentStep < steps.length - 1 && isCurrentStepValid()) {
+            currentStep++
+            updateStepVisibility()
+          }
+        })
+      
+        function isFormValid() {
+          const currentStepFields = steps[currentStep].querySelectorAll('input[required], textarea[required]')
+          for (const field of currentStepFields) {
+            if (!field.value.trim()) {
+              return false
+            }
+          }
+          return true
+        }
+      
+        // Update button states based on form validity
+        function updateButtonState() {
+          const currentStepFields = steps[currentStep].querySelectorAll('input[required], textarea[required]')
+          for (const field of currentStepFields) {
+            if (!field.value.trim()) {
+              nextStepButton.disabled = true
+              return // Exit the loop if any required field is empty
+            }
+          }
+          nextStepButton.disabled = false // Enable the button if all required fields are filled
+        }
+      
+        // Listen for input changes on all input fields and textareas within each step
+        steps.forEach((step) => {
+          const inputFields = step.querySelectorAll('input[required], textarea[required]')
+          inputFields.forEach((field) => {
+            field.addEventListener('input', updateButtonState)
+          })
+        })
+        // Listen for input changes on the current step
+        steps[currentStep].addEventListener('input', updateButtonState)
+      
+        // Initial button state
+        updateButtonState()
+      
+        // Example: To submit the form when the final step is completed
+        submitReservationButton.addEventListener('click', (e) => {
+          e.preventDefault()
+          // Perform form submission and processing here
+          // ...
+        })
+      
+        // Initial visibility setup
+        updateStepVisibility()
+      })
+    </script>
+  </body>
+</html>

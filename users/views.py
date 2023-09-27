@@ -22,6 +22,7 @@ from .mixins import GroupRequiredMixin
 from django.contrib.auth.models import Group
 from django.utils.decorators import method_decorator
 from .decorators import groups_required
+from test.models import Reservation
 
 # Create your views here.
 
@@ -43,7 +44,7 @@ class StaffLogoutView(LogoutView):
 
 @method_decorator(groups_required(['Admin', 'Staff']), name='dispatch')
 class reserveListView(LoginRequiredMixin,ListView):
-  model = Reservations
+  model = Reservation
   context_object_name = 'reserve'
   template_name = 'users/home.php'
   login_url = "login"

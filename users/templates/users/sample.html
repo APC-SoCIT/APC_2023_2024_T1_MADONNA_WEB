@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Page</title>
+	 <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Page</title>
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Include jQuery UI library -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+ <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+
+
+.calendar {
+            width: 70%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+
+    <header>
+        <h1>Make a Reservation</h1>
+    </header>
+    <div class="container">
+    <form action="#" method="post">
+        
+
+        <div class="calendar" id="calendar"></div>
+
+        <div id="selectedDates">
+            <strong>Check in:</strong>
+            <input id="checkInDate" type="text" disabled>
+            <strong>Check out:</strong>
+            <input id="checkOutDate" type="text" disabled>
+        </div>
+
+        <label for="num_guests">Number of Guests:</label>
+        <input type="number" id="num_guests" name="num_guests" required>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <input type="submit" value="Submit Reservation">
+    </form>
+</div>
+
+
+<script>
+ function isToday(dateStr) {
+                var today = new Date();
+                var selectedDate = new Date(dateStr);
+                return (
+                    today.getDate() === selectedDate.getDate() &&
+                    today.getMonth() === selectedDate.getMonth() &&
+                    today.getFullYear() === selectedDate.getFullYear()
+                );
+            }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var selectedCheckInDate = null;
+        var selectedCheckOutDate = null;
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth', // Change the view as needed
+            selectable: true, // Enable date selection
+            select: function (info) {
+
+                var selectedDate = new Date(info.startStr);
+
+                    // Check if the selected date is in the past
+                    if (selectedDate < new Date() && !isToday(info.startStr)) {
+                        alert("You can't select past dates.");
+                        calendar.unselect();
+                        return;
+                    }
+                    
+                    // Check if the selected check-in date is after the check-out date
+                    if (selectedCheckOutDate && selectedDate > new Date(selectedCheckOutDate)) {
+                        alert("Check-in date cannot be after the check-out date.");
+                        calendar.unselect();
+                        return;
+                    }
+
+                    
+
+                // Handle date selection
+                if (!selectedCheckInDate) {
+                    // Set the check-in date if it's not already set
+                    selectedCheckInDate = info.startStr;
+                } else if (!selectedCheckOutDate) {
+                        // Check if the selected check-out date is before the check-in date
+                        if (selectedDate < new Date(selectedCheckInDate)) {
+                            alert("Check-out date cannot be before or on the same day as the check-in date.");
+                            calendar.unselect();
+                            return;
+                        }
+
+                        // Set the check-out date
+                        selectedCheckOutDate = info.startStr;
+                        
+
+                         // Display selected dates
+                         document.getElementById('checkInDate').value = selectedCheckInDate;
+                        document.getElementById('checkOutDate').value = selectedCheckOutDate;
+
+                        // You can now use selectedCheckInDate and selectedCheckOutDate as needed.
+                        console.log("Check-in Date: " + selectedCheckInDate);
+                        console.log("Check-out Date: " + selectedCheckOutDate);
+                    }
+                renderSelection();
+            },
+            selectAllow: function (selectInfo) {
+                // Allow selection only if both check-in and check-out dates are not set
+                return !(selectedCheckInDate && selectedCheckOutDate);
+            },
+            events: [
+                {
+                    title: 'Unavailable',
+                    start: '2023-09-15',
+                    end: '2023-09-17',
+                    color: 'red'
+                },
+                {
+                    title: 'Unavailable',
+                    start: '2023-09-20',
+                    end: '2023-09-22',
+                    color: 'red'
+                }
+                // Add more unavailable date entries
+            ],
+            selectOverlap: function (event) {
+                // Prevent selection overlap with unavailable dates
+                return !event.backgroundColor || event.backgroundColor !== 'red';
+            }
+        });
+
+        function renderSelection() {
+            // Clear existing selections
+            calendar.removeAllEventSources();
+
+            // Add unavailable dates as events
+            calendar.addEventSource({
+                events: [
+                    {
+                        title: 'Unavailable',
+                        start: '2023-09-15',
+                        end: '2023-09-17',
+                        color: 'red'
+                    },
+                    {
+                        title: 'Unavailable',
+                        start: '2023-09-20',
+                        end: '2023-09-22',
+                        color: 'red'
+                    }
+                    // Add more unavailable date entries
+                ],
+                rendering: 'background'
+            });
+
+            
+                // Add selected check-in and check-out dates as events
+                if (selectedCheckInDate && selectedCheckOutDate) {
+                    calendar.addEvent({
+                        title: 'Check-in',
+                        start: selectedCheckInDate,
+                        color: 'blue' // Customize the color for check-in date
+                    });
+
+                    calendar.addEvent({
+                        title: 'Check-out',
+                        start: selectedCheckOutDate,
+                        color: 'blue' // Customize the color for check-out date
+                    });
+		   var currentDate = new Date(selectedCheckInDate);
+
+                    while (currentDate <= new Date(selectedCheckOutDate)) {
+                        var formattedDate = currentDate.toISOString().split('T')[0];
+                        calendar.addEvent({
+                            title: ' ',
+                            start: formattedDate,
+                            color: 'green' // Customize the color for selected date range
+                        });
+
+                        // Move to the next day
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    }
+            }
+           
+        }
+
+        calendar.render();
+    });
+</script>
+
+
+</body>
+</html>

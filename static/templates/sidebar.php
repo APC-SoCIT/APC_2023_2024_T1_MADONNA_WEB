@@ -81,9 +81,9 @@
 
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
-                <nav class="navbar bg-light navbar-light">
+                <nav class="navbar dashboardsidebar navbar-light">
                     <a href="index.html" class="navbar-brand mx-4 mb-3">
-                        <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
+                        <h3 class="text-primary"></i>Madonna's Web</h3>
                     </a>
                     <div class="d-flex align-items-center ms-4 mb-4">
                         <div class="ms-3">
@@ -152,7 +152,7 @@
         <!-- Content Start -->
         <div class="content">
             <!-- Navbar Start -->
-            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
+            <nav class="navbar navbar-expand dashboardsidebar navbar-light sticky-top px-4 py-0">
                 <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a>

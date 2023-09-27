@@ -22,7 +22,7 @@
                         <span class="position-absolute tm-new-badge">New</span>
                         <h2 class="tm-pt-30 tm-color-primary tm-post-title">{{x.blog_title}}</h2>
                     </a>                    
-                    <p class="tm-pt-30">
+                    <p class="tm-pt-30" style="height:100px;">
                         {{x.blog_content|truncatewords:25}}
                     </p>
                     <div class="d-flex justify-content-between tm-pt-45">

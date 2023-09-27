@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     "Reports",
     "Reports.scripts",
     "django.contrib.humanize",
+    "test",
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -164,3 +166,20 @@ LOGIN_REDIRECT_URL = "/staff"
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 """ SESSION_COOKIE_AGE = 5*60 """
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  # Use port 587 for TLS
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'dmanedward1110@gmail.com'  # Your Gmail email address
+EMAIL_HOST_PASSWORD = 'mvxp nfkd leqz auez'
+
+RECAPTCHA_SSL_VERIFICATION = False
+RECAPTCHA_PUBLIC_KEY = '6Lf4l0koAAAAAATJKiQvaGcslQKOVXl438opgZcP'
+RECAPTCHA_PRIVATE_KEY = '6Lf4l0koAAAAAKF_xyoPOCTvijyScPNEJD1ABs38'
+
+PAYMONGO_PUBLIC_KEY = 'pk_test_V35HwBEoyZRya4WP5jhYj9rY'
+PAYMONGO_SECRET_KEY = 'sk_test_ttWkBkczoDgX6dJ2T5fJndVm'
+

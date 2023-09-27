@@ -4256,9 +4256,10 @@ input[type="button"].btn-block {
     color: #202326; }
 
 .alert-success {
-  color: #155724;
-  background-color: #d4edda;
-  border-color: #c3e6cb; }
+  color: #5bb36f;
+  background-color: #313131;
+  border-color: #00ff3a;
+ }
   .alert-success hr {
     border-top-color: #b1dfbb; }
   .alert-success .alert-link {
@@ -8194,9 +8195,10 @@ h1, h2, h3, h4, h5,
 /*  Events display */
 .events-container {
   overflow-y: scroll;
-  background-color: #55d42a;
   height: 100%;
   width: 50%;
+  border: solid 4px;
+  border-color: greenyellow;
   float: right;
   margin: 0px auto;
   display: inline-block;
@@ -8251,7 +8253,9 @@ h1, h2, h3, h4, h5,
   margin: 0 auto;
   height: 100%;
   width: 50%;
-  background: #fff;
+  background: white;
+  border: solid 4px;
+  border-color: greenyellow;
   font: 13px Helvetica, Arial, san-serif;
   display: inline-block;
   padding: 20px;

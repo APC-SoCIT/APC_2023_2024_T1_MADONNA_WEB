@@ -5,6 +5,15 @@
 {%block title%}login{%endblock%}
 
 {%block content%}
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 <div class="container py-5 h-50">
     <div class="row d-flex justify-content-center align-items-center h-20  ">
       <div class="col-12 col-md-8 col-lg-6 col-xl-5">
@@ -22,7 +31,7 @@
                     <p>{{ field.label }}: <br> {{ field }}</p>
                     {% endfor %}
                     <div class="d-flex justify-content-center mb-3">
-                    <button type="submit" class="btn btn-primary"> Login </button>
+                    <button type="submit" class="login-btn"> Login </button>
                     </div>
                     </form> 
 

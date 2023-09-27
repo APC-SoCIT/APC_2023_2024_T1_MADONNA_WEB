@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Email Subject</title>
+</head>
+<body>
+    <div style="background-color: #f0f0f0; padding: 20px;">
+        <div style="background-color: #ffffff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 5px;">
+            <h2>Hello, {{ guest_name }}!</h2>
+            <p>Thank you for your reservation.</p>
+            <p>Here are the details of your reservation:</p>
+            
+            <ul>
+                <li>Reservation Date: {{ reservation_date }}</li>
+                <li>Check-in Date: {{ check_in_date }}</li>
+                <li>Check-out Date: {{ check_out_date }}</li>
+                <li>Check-in Date: {{ check_in_time }}</li>
+                <li>Check-out Date: {{ check_out_time }}</li>
+                <!-- Add more reservation details here as needed -->
+            </ul>
+            
+            <p>If you have any questions or need further assistance, please don't hesitate to contact us.</p>
+            
+            <p>Best regards,<br>Your Name</p>
+        </div>
+    </div>
+</body>
+</html>
